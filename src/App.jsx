@@ -1,4 +1,5 @@
-import {useState, useMemo} from "react";
+import {useState, useMemo, useEffect} from "react";
+import personService from "./services/persons";
 
 const Filter = ({value, onChange}) => {
   return (
@@ -30,25 +31,23 @@ const PersonForm = ({
   );
 };
 
-const Persons = ({person}) => {
+const Persons = ({person, onClick}) => {
   return (
     <div>
-      {person.name} {person.number}
+      {person.name} {person.number} <button onClick={onClick}>delete</button>
     </div>
   );
 };
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {name: "Arto Hellas", number: "040-123456", id: 1},
-    {name: "Ada Lovelace", number: "39-44-5323523", id: 2},
-    {name: "Dan Abramov", number: "12-43-234345", id: 3},
-    {name: "Mary Poppendieck", number: "39-23-6423122", id: 4},
-  ]);
-
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    personService.getAll().then(initialPersons => setPersons(initialPersons));
+  }, []);
 
   const filteredNames = useMemo(() => {
     return persons.filter(person => {
@@ -66,9 +65,11 @@ const App = () => {
       number: newNumber,
     };
 
-    setPersons(persons.concat(nameObject));
-    setNewName("");
-    setNewNumber("");
+    personService.create(nameObject).then(returnedName => {
+      setPersons(persons.concat(returnedName));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const handlerNameChange = event => {
@@ -81,6 +82,22 @@ const App = () => {
 
   const handlerSearchChange = event => {
     setQuery(event.target.value);
+  };
+
+  const handlerDeleteName = id => {
+    const deletedItem = persons.find(person => person.id === id);
+
+    if (window.confirm(`Delete ${deletedItem.name}?`)) {
+      personService
+        .deleteItem(id)
+        .then(() => {
+          console.log(`Deleted post with ID ${id}`);
+          setPersons(persons.filter(person => person.id !== id));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   };
 
   return (
@@ -97,7 +114,11 @@ const App = () => {
       />
       <h2>Numbers</h2>
       {filteredNames.map(person => (
-        <Persons key={person.id} person={person} />
+        <Persons
+          key={person.id}
+          person={person}
+          onClick={() => handlerDeleteName(person.id)}
+        />
       ))}
     </div>
   );
