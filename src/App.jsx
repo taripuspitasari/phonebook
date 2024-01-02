@@ -68,11 +68,23 @@ const Persons = ({person, onClick}) => {
   );
 };
 
+const Notification = ({message}) => {
+  if (message === null) {
+    return null;
+  }
+  return (
+    <div className="text-center text-green-700 bg-green-200 p-1 rounded ring-1 ring-green-400">
+      {message}
+    </div>
+  );
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [query, setQuery] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then(initialPersons => setPersons(initialPersons));
@@ -98,6 +110,10 @@ const App = () => {
       setPersons(persons.concat(returnedName));
       setNewName("");
       setNewNumber("");
+      setConfirmMessage(`added ${newName}`);
+      setTimeout(() => {
+        setConfirmMessage(null);
+      }, 5000);
     });
   };
 
@@ -134,6 +150,7 @@ const App = () => {
       <h2 className="text-3xl font-bold text-center m-2">Phonebook</h2>
       <Filter value={query} onChange={handlerSearchChange} />
       <h2 className="text-3xl font-medium text-center mt-3">add a new</h2>
+      <Notification message={confirmMessage} />
       <PersonForm
         onSubmit={handlerSubmit}
         valName={newName}
