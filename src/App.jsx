@@ -4,7 +4,14 @@ import personService from "./services/persons";
 const Filter = ({value, onChange}) => {
   return (
     <div>
-      filter shown with <input value={value} onChange={onChange} />
+      <input
+        placeholder="filter shown with"
+        className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
+      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+      "
+        value={value}
+        onChange={onChange}
+      />
     </div>
   );
 };
@@ -19,13 +26,32 @@ const PersonForm = ({
   return (
     <form onSubmit={onSubmit}>
       <div>
-        name: <input value={valName} onChange={onChangeName} />
+        name:{" "}
+        <input
+          className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
+          focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+          "
+          value={valName}
+          onChange={onChangeName}
+        />
       </div>
       <div>
-        number: <input value={valNumber} onChange={onChangeNumber} />
+        number:{" "}
+        <input
+          className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
+          focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+          "
+          value={valNumber}
+          onChange={onChangeNumber}
+        />
       </div>
       <div>
-        <button type="submit">add</button>
+        <button
+          className="my-6 w-full rounded py-1 bg-sky-500 hover:bg-sky-700"
+          type="submit"
+        >
+          add
+        </button>
       </div>
     </form>
   );
@@ -34,7 +60,10 @@ const PersonForm = ({
 const Persons = ({person, onClick}) => {
   return (
     <div>
-      {person.name} {person.number} <button onClick={onClick}>delete</button>
+      {person.name} {person.number}{" "}
+      <button className="rounded p-1 hover:bg-red-500" onClick={onClick}>
+        delete
+      </button>
     </div>
   );
 };
@@ -101,10 +130,10 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h2>Phonebook</h2>
+    <div className="p-6 max-w-sm mx-auto">
+      <h2 className="text-3xl font-bold text-center m-2">Phonebook</h2>
       <Filter value={query} onChange={handlerSearchChange} />
-      <h2>add a new</h2>
+      <h2 className="text-3xl font-medium text-center mt-3">add a new</h2>
       <PersonForm
         onSubmit={handlerSubmit}
         valName={newName}
@@ -112,7 +141,7 @@ const App = () => {
         valNumber={newNumber}
         onChangeNumber={handlerNumberChange}
       />
-      <h2>Numbers</h2>
+      <h2 className="text-3xl font-medium text-center mb-3">Numbers</h2>
       {filteredNames.map(person => (
         <Persons
           key={person.id}
