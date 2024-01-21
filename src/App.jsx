@@ -102,7 +102,35 @@ const App = () => {
       persons.findIndex(x => x.name.toLowerCase() === newName.toLowerCase()) !==
       -1
     ) {
-      return alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const person = persons.find(
+          x => x.name.toLowerCase() === newName.toLowerCase()
+        );
+        const personId = person.id;
+        const personNumber = person.number;
+        let updateNumber = prompt("Please enter your new number", personNumber);
+        const changedNumber = {...person, number: updateNumber};
+
+        personService
+          .updateItem(personId, changedNumber)
+          .then(returnedNumber => {
+            setPersons(
+              persons.map(person =>
+                person.id !== personId ? person : returnedNumber
+              )
+            );
+            setConfirmMessage(`updated ${newName}`);
+            setTimeout(() => {
+              setConfirmMessage(null);
+            }, 5000);
+            setNewName("");
+          });
+      }
+      return;
     }
     const nameObject = {
       name: newName,
@@ -120,18 +148,6 @@ const App = () => {
     });
   };
 
-  const handlerNameChange = event => {
-    setNewName(event.target.value);
-  };
-
-  const handlerNumberChange = event => {
-    setNewNumber(event.target.value);
-  };
-
-  const handlerSearchChange = event => {
-    setQuery(event.target.value);
-  };
-
   const handlerDeleteName = id => {
     const deletedItem = persons.find(person => person.id === id);
 
@@ -146,6 +162,18 @@ const App = () => {
           console.error(error);
         });
     }
+  };
+
+  const handlerNameChange = event => {
+    setNewName(event.target.value);
+  };
+
+  const handlerNumberChange = event => {
+    setNewNumber(event.target.value);
+  };
+
+  const handlerSearchChange = event => {
+    setQuery(event.target.value);
   };
 
   return (
