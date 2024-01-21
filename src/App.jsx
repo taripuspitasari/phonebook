@@ -128,6 +128,7 @@ const App = () => {
               setConfirmMessage(null);
             }, 5000);
             setNewName("");
+            setNewNumber("");
           });
       }
       return;
