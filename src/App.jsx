@@ -98,7 +98,10 @@ const App = () => {
 
   const handlerSubmit = event => {
     event.preventDefault();
-    if (persons.findIndex(x => x.name === newName) !== -1) {
+    if (
+      persons.findIndex(x => x.name.toLowerCase() === newName.toLowerCase()) !==
+      -1
+    ) {
       return alert(`${newName} is already added to phonebook`);
     }
     const nameObject = {
