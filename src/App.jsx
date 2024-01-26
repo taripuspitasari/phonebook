@@ -138,15 +138,23 @@ const App = () => {
       number: newNumber,
     };
 
-    personService.create(nameObject).then(returnedName => {
-      setPersons(persons.concat(returnedName));
-      setNewName("");
-      setNewNumber("");
-      setConfirmMessage(`added ${newName}`);
-      setTimeout(() => {
-        setConfirmMessage(null);
-      }, 5000);
-    });
+    personService
+      .create(nameObject)
+      .then(returnedName => {
+        setPersons(persons.concat(returnedName));
+        setNewName("");
+        setNewNumber("");
+        setConfirmMessage(`added ${newName}`);
+        setTimeout(() => {
+          setConfirmMessage(null);
+        }, 5000);
+      })
+      .catch(error => {
+        setConfirmMessage(error.response.data.error);
+        setTimeout(() => {
+          setConfirmMessage(null);
+        }, 5000);
+      });
   };
 
   const handlerDeleteName = id => {
